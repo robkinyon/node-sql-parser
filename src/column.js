@@ -10,6 +10,7 @@ import {
   identifierToSql,
   literalToSQL,
   toUpper,
+  keyPartToSQL,
 } from './util'
 
 function columnRefToSQL(expr) {
@@ -51,7 +52,7 @@ function columnReferenceDefinitionToSQL(referenceDefinition) {
   } = referenceDefinition
   reference.push(keyword.toUpperCase())
   reference.push(tablesToSQL(table))
-  reference.push(`(${definition.map(identifierToSql).join(', ')})`)
+  reference.push(`(${definition.map(keyPartToSQL).join(', ')})`)
   reference.push(toUpper(match))
   reference.push(...commonTypeValue(onDelete))
   reference.push(...commonTypeValue(onUpdate))

@@ -584,7 +584,7 @@ create_index_definition
   = kc:(KW_INDEX / KW_KEY) __
     c:column? __
     t:index_type? __
-    de:cte_column_definition __
+    de:key_part __
     id:index_options? __
      {
       return {
@@ -601,7 +601,7 @@ create_fulltext_spatial_index_definition
   = p: (KW_FULLTEXT / KW_SPATIAL) __
     kc:(KW_INDEX / KW_KEY)? __
     c:column? __
-    de: cte_column_definition __
+    de:key_part __
     id: index_options? __
      {
       return {
@@ -632,7 +632,7 @@ create_constraint_primary
   = kc:constraint_name? __
   p:('PRIMARY'i __ 'KEY'i) __
   t:index_type? __
-  de:cte_column_definition __
+  de:key_part __
   id:index_options? {
     return {
         constraint: kc && kc.constraint,
@@ -651,7 +651,7 @@ create_constraint_unique
   p:(KW_INDEX / KW_KEY)? __
   i:column? __
   t:index_type? __
-  de:cte_column_definition __
+  de:key_part __
   id:index_options? {
     return {
         constraint: kc && kc.constraint,
@@ -681,7 +681,7 @@ create_constraint_foreign
   = kc:constraint_name? __
   p:('FOREIGN KEY'i) __
   i:column? __
-  de:cte_column_definition __
+  de:key_part __
   id:reference_definition? {
     return {
         constraint: kc && kc.constraint,
@@ -697,7 +697,7 @@ create_constraint_foreign
 reference_definition
   = kc:KW_REFERENCES __
   t:table_ref_list __
-  de:cte_column_definition __
+  de:key_part __
   m:('MATCH FULL'i / 'MATCH PARTIAL'i / 'MATCH SIMPLE'i)? __
   od: on_reference? __
   ou: on_reference? {
@@ -898,6 +898,19 @@ cte_definition
 
 cte_column_definition
   = LPAREN __ head:column tail:(__ COMMA __ column)* __ RPAREN {
+      return createList(head, tail);
+    }
+
+key_part_item
+  = c:column
+  {
+    return {
+      column: c,
+    };
+  }
+
+key_part
+  = LPAREN __ head:key_part_item tail:(__ COMMA __ key_part_item)* __ RPAREN {
       return createList(head, tail);
     }
 

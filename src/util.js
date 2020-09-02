@@ -277,6 +277,10 @@ function columnOrderListToSQL(columnOrderList) {
   return columnOrderList.map(columnOrderToSQL).filter(hasVal).join(', ')
 }
 
+function keyPartToSQL(keypart) {
+  return identifierToSql(keypart.column)
+}
+
 export {
   arrayStructTypeToSQL, autoIncreatementToSQL,
   columnOrderListToSQL, commonKeywordArgsToSQL, commonOptionConnector,
@@ -284,4 +288,5 @@ export {
   createValueExpr, DEFAULT_OPT, escape, literalToSQL,
   identifierToSql, onPartitionsToSQL, replaceParams, returningToSQL,
   hasVal, setParserOpt, toUpper, topToSQL, triggerEventToSQL,
+  keyPartToSQL,
 }

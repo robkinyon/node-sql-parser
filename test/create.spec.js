@@ -101,7 +101,6 @@ describe('create', () => {
         expect(getParsedSql(`create temporary table if not exists dbname.tableName (id INT(11) auto_increment primary key comment "id column" collate utf8_bin column_format fixed storage disk references rdb.rta(id) match full on delete cascade on update restrict, name varchar(128) unique key comment "user name" collate utf8_bin column_format dynamic storage memory references rdb.rtb(name) match simple on delete set null on update set default) ENGINE = MEMORY`))
           .to.equal('CREATE TEMPORARY TABLE IF NOT EXISTS `dbname`.`tableName` (`id` INT(11) AUTO_INCREMENT PRIMARY KEY COMMENT \'id column\' COLLATE UTF8_BIN COLUMN_FORMAT FIXED STORAGE DISK REFERENCES `rdb`.`rta` (`id`) MATCH FULL ON DELETE CASCADE ON UPDATE RESTRICT, `name` VARCHAR(128) UNIQUE KEY COMMENT \'user name\' COLLATE UTF8_BIN COLUMN_FORMAT DYNAMIC STORAGE MEMORY REFERENCES `rdb`.`rtb` (`name`) MATCH SIMPLE ON DELETE SET NULL ON UPDATE SET DEFAULT) ENGINE = MEMORY');
       })
-
     })
 
     describe('create index or key', () => {
@@ -122,6 +121,22 @@ describe('create', () => {
           expect(getParsedSql(`create temporary table dbname.tableName (id int, name varchar(128), ${type} using btree (name) key_block_size = 128 invisible with parser newparser comment "index comment")`))
             .to.equal(`CREATE TEMPORARY TABLE \`dbname\`.\`tableName\` (\`id\` INT, \`name\` VARCHAR(128), ${type.toUpperCase()} USING BTREE (\`name\`) KEY_BLOCK_SIZE = 128 INVISIBLE WITH PARSER newparser COMMENT 'index comment')`);
         })
+
+        /*
+        it(`${type} should support column lengths`, () => {
+          expect(getParsedSql(`create table dbname.tableName (id int, ${type} (id(10)))`))
+            .to.equal(`CREATE TABLE \`dbname\`.\`tableName\` (\`id\` INT, ${type.toUpperCase()} (\`id\`(10))`);
+        })
+
+        it(`${type} should support ASC`, () => {
+        })
+
+        it(`${type} should support DESC`, () => {
+        })
+
+        it(`${type} should support multiple columns`, () => {
+        })
+        */
       });
 
       ['fulltext', 'spatial'].forEach(prefix => {
@@ -505,7 +520,7 @@ describe('create', () => {
       expect(columnOrderListToSQL()).to.be.equal(undefined)
     })
   })
-  it('throw error when create type is unknow', () => {
+  it('throw error when create type is unknown', () => {
     const ast = {
       type: 'create',
       keyword: 'unknow_create_type'

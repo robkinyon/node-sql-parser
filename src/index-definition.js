@@ -1,6 +1,6 @@
 import {
   literalToSQL,
-  identifierToSql,
+  keyPartToSQL,
   toUpper,
   hasVal,
   commentToSQL,
@@ -65,7 +65,7 @@ function indexTypeAndOptionToSQL(indexDefinition) {
   const dataType = []
   dataType.push(...indexTypeToSQL(indexType))
   if (definition && definition.length) {
-    const definitionSQL = toUpper(constraintType) === 'CHECK' ? `(${exprToSQL(definition[0])})` : `(${definition.map(col => identifierToSql(col)).join(', ')})`
+    const definitionSQL = toUpper(constraintType) === 'CHECK' ? `(${exprToSQL(definition[0])})` : `(${definition.map(col => keyPartToSQL(col)).join(', ')})`
     dataType.push(definitionSQL)
   }
   dataType.push(indexOptionListToSQL(indexOptions).join(' '))

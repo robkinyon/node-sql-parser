@@ -2,7 +2,7 @@ import { columnDefinitionToSQL } from './column'
 import { indexTypeAndOptionToSQL } from './index-definition'
 import { tablesToSQL } from './tables'
 import { exprToSQL } from './expr'
-import { hasVal, toUpper, identifierToSql } from './util'
+import { hasVal, toUpper, identifierToSql, keyPartToSQL } from './util'
 
 function alterToSQL(stmt) {
   const { type, table, expr = [] } = stmt
@@ -35,7 +35,7 @@ function alterExprToSQL(expr) {
       name = `= ${expr[resource]}`
       break
     case 'constraint':
-      name = identifierToSql(expr[resource])
+      name = keyword === 'check' ? identifierToSql(expr[resource]) : keyPartToSQL(expr[resource])
       dataType = [toUpper(constraintType), ...indexTypeAndOptionToSQL(expr)]
       break
     default:
